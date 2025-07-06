@@ -81,33 +81,11 @@ class TypingTutorKeyboard {
     }
 
     this.initializePhysicalKeyMap();
-    this.detectInitialCapsLockState();
     this.render();
     this.setupEventListeners();
   }
 
-  private detectInitialCapsLockState(): void {
-    // Add a one-time listener to detect caps lock state on first interaction
-    const detectCapsLock = (e: KeyboardEvent) => {
-      if (e.getModifierState) {
-        const capsLockState = e.getModifierState('CapsLock');
-        if (capsLockState !== this.state.isCapsLockOn) {
-          this.state.isCapsLockOn = capsLockState;
-          if (this.options.debug) {
-            console.log('Initial Caps Lock state detected:', this.state.isCapsLockOn);
-          }
-          this.updateKeyStates();
-          this.notifyStateChange();
-        }
-      }
-      document.removeEventListener('keydown', detectCapsLock);
-      document.removeEventListener('keyup', detectCapsLock);
-    };
 
-    // Listen for any key event to detect initial state
-    document.addEventListener('keydown', detectCapsLock, { once: true });
-    document.addEventListener('keyup', detectCapsLock, { once: true });
-  }
 
   private initializePhysicalKeyMap(): void {
     // Map physical keyboard codes to our key names
@@ -168,7 +146,10 @@ class TypingTutorKeyboard {
   private createKeyElement(key: string): HTMLElement {
     const element = document.createElement('button');
     element.className = 'keyboard-key';
-    element.textContent = key;
+
+    // Display "Shift" for both left and right shift keys
+    const displayText = (key === 'ShiftLeft' || key === 'ShiftRight') ? 'Shift' : key;
+    element.textContent = displayText;
     element.dataset.key = key.toLowerCase();
 
     // Add special classes for different key types

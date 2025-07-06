@@ -13,6 +13,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   max-width: 800px;
+  min-width: 750px;
   margin: 0 auto;
 }
 
@@ -103,7 +104,7 @@
 }
 
 .keyboard-key[data-key="capslock"] {
-  flex: 1.8;
+  flex: 2.0;
 }
 
 .keyboard-key[data-key="enter"] {
@@ -117,7 +118,6 @@
 
 /* Highlighted states for physical keyboard sync */
 .keyboard-key.highlighted {
-  border-width: 3px;
   font-weight: 700;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
