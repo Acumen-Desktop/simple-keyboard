@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -113,12 +114,11 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>✅ Kids Keyboard</h1>
-
-        <textarea class="input-display" id="textInput" placeholder="Type here - this should now update correctly with all keystrokes!"></textarea>
-
+        <input type="text" id="alternateTextInput" placeholder="This  is separate!">
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-label">Characters</div>
@@ -137,27 +137,29 @@
                 <div class="stat-value" id="capsState">Off</div>
             </div>
         </div>
-
         <div class="controls">
             <button class="btn" onclick="insertSampleText()">📝 Insert Sample Text</button>
             <button class="btn" onclick="clearText()">🗑️ Clear Text</button>
         </div>
-
-        <div id="keyboard-container"></div>
+        <main id="kids-keyboard-tutor">
+            <textarea class="kids-display" id="kids-input"
+                placeholder="Type here - this should now update correctly with all keystrokes!"></textarea>
+            <div id="kids-keyboard-container"></div>
+        </main>
     </div>
 
     <script src="kids-keyboard.js"></script>
-    <script> 
+    <script>
         let keyboard;
 
         function initKeyboard() {
             keyboard = createKidsKeyboard({
-                container: '#keyboard-container',
+                container: '#kids-keyboard-container',
+                targetInput: '#kids-input', // Target input for tutor mode
+                tutorContainer: '#kids-keyboard-tutor', // Optional: explicit tutor container
                 debug: true,
                 onChange: (input) => {
                     console.log('onChange:', input);
-                    const textInput = document.getElementById('textInput');
-                    textInput.value = input;
                     updateStats();
                 },
                 onKeyPress: (key, event) => {
@@ -166,13 +168,17 @@
                 onStateChange: (state) => {
                     console.log('onStateChange:', state);
                     updateModifierStates(state);
+                },
+                onTutorModeChange: (isActive) => {
+                    console.log('Tutor mode:', isActive ? 'ACTIVE' : 'INACTIVE');
+                    // Visual feedback is now handled by CSS classes automatically
                 }
             });
         }
 
         function updateStats() {
             const text = keyboard ? keyboard.getInput() : '';
-            
+
             document.getElementById('charCount').textContent = text.length;
             document.getElementById('wordCount').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
         }
@@ -183,32 +189,33 @@
         }
 
         // Demo functions
-        window.insertSampleText = function() {
+        window.insertSampleText = function () {
             const sampleText = 'The quick brown fox jumps over the lazy dog. HELLO WORLD! 123456789';
             keyboard.setInput(sampleText);
             updateStats();
         };
 
-        window.clearText = function() {
+        window.clearText = function () {
             keyboard.clearInput();
             updateStats();
         };
 
         // Initialize everything
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             initKeyboard();
             updateStats();
-            
-            // Sync text input with keyboard
-            document.getElementById('textInput').addEventListener('input', function(e) {
-                if (keyboard) {
+
+            // Sync text input with keyboard (when not in tutor mode)
+            document.getElementById('kids-input').addEventListener('input', function (e) {
+                if (keyboard && !keyboard.isTutorModeActive()) {
                     keyboard.setInput(e.target.value);
                 }
                 updateStats();
             });
-            
+
             console.log('✅ Simple functional keyboard loaded!');
         });
     </script>
 </body>
+
 </html>

@@ -218,6 +218,11 @@ const createKeyElement = (key, defaultLayout, shiftLayout, rowIndex, keyIndex) =
     element.dataset.key = key.toLowerCase();
     element.dataset.rowIndex = rowIndex;
     element.dataset.keyIndex = keyIndex;
+    
+    // Add ARIA attributes for accessibility
+    element.setAttribute('role', 'button');
+    element.setAttribute('tabindex', '0');
+    element.setAttribute('aria-label', `Key ${getKeyDisplayText(key)}`);
 
     // Store both default and shift characters for this key position
     const defaultChar = defaultLayout[rowIndex][keyIndex];
@@ -245,8 +250,6 @@ const createKeyElement = (key, defaultLayout, shiftLayout, rowIndex, keyIndex) =
         element.classList.add('modifier-key');
     } else if (key === 'Space') {
         element.classList.add('space-key');
-    } else if (key === 'Tab') {
-        element.classList.add('normal-key');
     } else if (key.length > 1) {
         element.classList.add('function-key');
     } else {
@@ -264,7 +267,12 @@ const renderKeyboard = (container, state, keyElements, onKeyPress) => {
     // Only render DOM elements once
     if (keyElements.size === 0) {
         container.innerHTML = '';
-        container.className = 'kids-keyboard';
+        container.className = 'typing-tutor-keyboard';
+        
+        // Add ARIA attributes for the keyboard container
+        container.setAttribute('role', 'application');
+        container.setAttribute('aria-label', 'Virtual keyboard for typing input');
+        container.setAttribute('aria-live', 'polite');
 
         const defaultLayout = KEYBOARD_LAYOUTS.default;
         const shiftLayout = KEYBOARD_LAYOUTS.shift;
@@ -285,7 +293,7 @@ const renderKeyboard = (container, state, keyElements, onKeyPress) => {
         });
 
         // Use event delegation for better performance
-        container.addEventListener('click', (e) => {
+        const handleContainerClick = (e) => {
             if (e.target.matches('.keyboard-key')) {
                 e.preventDefault();
                 // Find the original key from the layout
@@ -294,7 +302,9 @@ const renderKeyboard = (container, state, keyElements, onKeyPress) => {
                 const originalKey = KEYBOARD_LAYOUTS.default[rowIndex][keyIndex];
                 safeCallback(onKeyPress, originalKey, e);
             }
-        });
+        };
+        
+        container.addEventListener('click', handleContainerClick);
     }
 
     // Update layout class for CSS-based switching
@@ -403,23 +413,75 @@ function createKidsKeyboard(options = {}) {
         normalKeyColor: '#4CAF50',
         modifierKeyColor: '#FFC107',
         activeKeyColor: '#2196F3',
-        debug: false
+        debug: false,
+        targetInput: null // Target input element for focus-aware mode
     };
     const mergedOptions = { ...defaultOptions, ...options };
 
-    // Get container element
-    const container = typeof mergedOptions.container === 'string' 
-        ? document.querySelector(mergedOptions.container)
-        : mergedOptions.container;
+    // Get container element with improved error handling
+    let container;
+    try {
+        container = typeof mergedOptions.container === 'string' 
+            ? document.querySelector(mergedOptions.container)
+            : mergedOptions.container;
+    } catch (error) {
+        throw new Error(`Invalid container selector: ${mergedOptions.container}. Error: ${error.message}`);
+    }
 
     if (!container) {
-        throw new Error('Container element not found');
+        throw new Error(`Container element not found: ${mergedOptions.container}. Please ensure the element exists in the DOM.`);
+    }
+
+    if (!(container instanceof HTMLElement)) {
+        throw new Error(`Container must be an HTMLElement. Received: ${typeof container}`);
+    }
+
+    // Get target input element for focus-aware mode
+    let targetInput = null;
+    if (mergedOptions.targetInput) {
+        try {
+            targetInput = typeof mergedOptions.targetInput === 'string' 
+                ? document.querySelector(mergedOptions.targetInput)
+                : mergedOptions.targetInput;
+        } catch (error) {
+            console.warn(`Invalid target input selector: ${mergedOptions.targetInput}`);
+        }
+        
+        if (targetInput && !(targetInput instanceof HTMLElement)) {
+            console.warn(`Target input must be an HTMLElement. Received: ${typeof targetInput}`);
+            targetInput = null;
+        }
+    }
+
+    // Get tutor container for mouse-based activation
+    let tutorContainer = null;
+    if (mergedOptions.tutorContainer) {
+        try {
+            tutorContainer = typeof mergedOptions.tutorContainer === 'string' 
+                ? document.querySelector(mergedOptions.tutorContainer)
+                : mergedOptions.tutorContainer;
+        } catch (error) {
+            console.warn(`Invalid tutor container selector: ${mergedOptions.tutorContainer}`);
+        }
+    } else {
+        // Auto-detect tutor container by looking for parent with 'tutor' in ID
+        let current = container.parentElement;
+        while (current && current !== document.body) {
+            if (current.id && current.id.includes('tutor')) {
+                tutorContainer = current;
+                break;
+            }
+            current = current.parentElement;
+        }
     }
 
     // Initialize state and elements
     let state = createKeyboardState();
     const keyElements = new Map();
     const physicalKeyMap = getPhysicalKeyMap();
+    
+    // Track focus state for tutor mode
+    let isTutorMode = false;
 
     /**
      * FIXED: Centralized state update function to prevent race conditions
@@ -499,14 +561,27 @@ function createKidsKeyboard(options = {}) {
 
         // Safely notify about input changes
         if (inputChanged) {
+            // Sync with target input if in tutor mode
+            if (isTutorMode && targetInput) {
+                targetInput.value = newState.input;
+                targetInput.setSelectionRange(newState.caretPosition, newState.caretPosition);
+                
+                // Trigger input event for form validation and other listeners
+                targetInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            
             safeCallback(mergedOptions.onChange, newState.input);
         }
     };
 
     /**
      * FIXED: Physical keyboard event handlers now use setState consistently
+     * ENHANCED: Only capture when in tutor mode (target input focused)
      */
     const handlePhysicalKeyDown = (event) => {
+        // Only handle physical keyboard when in tutor mode
+        if (!isTutorMode) return;
+        
         const virtualKey = physicalKeyMap.get(event.code);
         if (!virtualKey) return;
 
@@ -535,6 +610,9 @@ function createKidsKeyboard(options = {}) {
     };
 
     const handlePhysicalKeyUp = (event) => {
+        // Only handle physical keyboard when in tutor mode
+        if (!isTutorMode) return;
+        
         const virtualKey = physicalKeyMap.get(event.code);
         if (!virtualKey) return;
 
@@ -562,16 +640,76 @@ function createKidsKeyboard(options = {}) {
         updateKeyStates(keyElements, state);
     };
 
+    // Mouse enter/leave handlers for tutor mode
+    const handleTutorEnter = (event) => {
+        isTutorMode = true;
+        if (mergedOptions.debug) {
+            console.log('Tutor mode activated (mouse enter)');
+        }
+        
+        // Sync keyboard state with target input
+        if (targetInput) {
+            setState({
+                ...state,
+                input: targetInput.value || '',
+                caretPosition: targetInput.selectionStart || 0
+            });
+        }
+        
+        // Add visual indicator to tutor container
+        if (tutorContainer) {
+            tutorContainer.classList.add('tutor-mode-active');
+        }
+        
+        safeCallback(mergedOptions.onTutorModeChange, true);
+    };
+
+    const handleTutorLeave = (event) => {
+        isTutorMode = false;
+        if (mergedOptions.debug) {
+            console.log('Tutor mode deactivated (mouse leave)');
+        }
+        
+        // Remove visual indicator from tutor container
+        if (tutorContainer) {
+            tutorContainer.classList.remove('tutor-mode-active');
+        }
+        
+        safeCallback(mergedOptions.onTutorModeChange, false);
+    };
+
     // Setup event listeners
     const setupEventListeners = () => {
         document.addEventListener('keydown', handlePhysicalKeyDown);
         document.addEventListener('keyup', handlePhysicalKeyUp);
+        
+        // Setup mouse-based tutor mode activation
+        if (tutorContainer) {
+            tutorContainer.addEventListener('mouseenter', handleTutorEnter);
+            tutorContainer.addEventListener('mouseleave', handleTutorLeave);
+            
+            if (mergedOptions.debug) {
+                console.log('Mouse-based tutor mode enabled on:', tutorContainer.id || tutorContainer.className);
+            }
+        } else {
+            console.warn('No tutor container found - tutor mode activation disabled');
+        }
     };
 
     // Cleanup function
     const destroy = () => {
         document.removeEventListener('keydown', handlePhysicalKeyDown);
         document.removeEventListener('keyup', handlePhysicalKeyUp);
+        
+        // Remove click event listener from container
+        container.removeEventListener('click', handleContainerClick);
+        
+        // Remove tutor container event listeners
+        if (tutorContainer) {
+            tutorContainer.removeEventListener('mouseenter', handleTutorEnter);
+            tutorContainer.removeEventListener('mouseleave', handleTutorLeave);
+        }
+        
         container.innerHTML = '';
         keyElements.clear();
     };
@@ -623,6 +761,10 @@ function createKidsKeyboard(options = {}) {
 
         // State methods
         getState: () => ({ ...state }),
+
+        // Tutor mode methods
+        isTutorModeActive: () => isTutorMode,
+        getTargetInput: () => targetInput,
 
         // Lifecycle methods
         destroy
