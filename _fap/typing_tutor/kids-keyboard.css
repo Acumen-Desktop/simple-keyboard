@@ -157,3 +157,61 @@
   border-color: #e65100;
 }
 
+/* PERFORMANCE OPTIMIZATION: Layout switching classes */
+.kids-keyboard {
+  /* Base keyboard container styles */
+}
+
+.kids-keyboard.shift-layout .keyboard-key[data-shift-char] {
+  /* Show shift character when in shift layout */
+}
+
+.kids-keyboard.shift-layout .keyboard-key[data-default-char] {
+  /* Hide default character when in shift layout */
+}
+
+/* Layout-specific character display */
+.keyboard-key .key-char-default {
+  display: block;
+}
+
+.keyboard-key .key-char-shift {
+  display: none;
+}
+
+.kids-keyboard.shift-layout .keyboard-key .key-char-default {
+  display: none;
+}
+
+.kids-keyboard.shift-layout .keyboard-key .key-char-shift {
+  display: block;
+}
+
+/* Optimized highlighting classes to replace inline styles */
+.keyboard-key.highlight-normal {
+  background-color: #4CAF50 !important;
+  color: white;
+  border-color: #45a049;
+  font-weight: 700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.keyboard-key.highlight-modifier {
+  background-color: #FFC107 !important;
+  color: #333;
+  border-color: #ffb300;
+  font-weight: 700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.keyboard-key.highlight-function {
+  background-color: #2196F3 !important;
+  color: white;
+  border-color: #1976D2;
+  font-weight: 700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+

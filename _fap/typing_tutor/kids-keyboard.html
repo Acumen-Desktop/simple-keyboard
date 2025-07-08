@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Functional Keyboard Test</title>
+    <title>Kids Keyboard Demo</title>
     <link rel="stylesheet" href="kids-keyboard.css">
     <style>
         body {
@@ -31,7 +31,7 @@
         }
 
         .input-display {
-            width: 100%;
+            width: calc(100% - 40px);
             min-height: 120px;
             padding: 15px;
             border: 2px solid #e0e0e0;
@@ -115,11 +115,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>✅ Working Functional Keyboard</h1>
-        
-        <div class="working">
-            🎉 This simplified functional approach should work correctly!
-        </div>
+        <h1>✅ Kids Keyboard</h1>
 
         <textarea class="input-display" id="textInput" placeholder="Type here - this should now update correctly with all keystrokes!"></textarea>
 
@@ -151,7 +147,7 @@
     </div>
 
     <script src="kids-keyboard.js"></script>
-    <script>
+    <script> 
         let keyboard;
 
         function initKeyboard() {
