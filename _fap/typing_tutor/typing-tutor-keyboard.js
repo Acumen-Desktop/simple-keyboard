@@ -40,8 +40,6 @@ class TypingTutorKeyboard {
             isLeftShiftPressed: false,
             isRightShiftPressed: false,
             isCapsLockOn: false,
-            isCtrlPressed: false,
-            isAltPressed: false
         };
 
         this.container = typeof options.container === 'string' 
@@ -146,7 +144,7 @@ class TypingTutorKeyboard {
     }
 
     isModifierKey(key) {
-        return ['ShiftLeft', 'ShiftRight', 'CapsLock', 'Ctrl', 'Alt'].includes(key);
+        return ['ShiftLeft', 'ShiftRight', 'CapsLock'].includes(key);
     }
 
     setupEventListeners() {
@@ -227,9 +225,6 @@ class TypingTutorKeyboard {
                 this.state.isRightShiftPressed = false;
             }
         }
-
-        this.state.isCtrlPressed = event.ctrlKey;
-        this.state.isAltPressed = event.altKey;
 
         // Handle caps lock state detection
         if (event.getModifierState) {

@@ -59,7 +59,7 @@
 /* Normal character keys */
 .keyboard-key.normal-key {
   flex: 1;
-  max-width: 60px;
+  /* max-width: 60px; */
 }
 
 /* Function keys (Backspace, Enter, etc.) */
@@ -157,94 +157,3 @@
   border-color: #e65100;
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .typing-tutor-keyboard {
-    padding: 8px;
-    max-width: 100%;
-  }
-  
-  .keyboard-key {
-    min-height: 40px;
-    min-width: 35px;
-    font-size: 14px;
-  }
-  
-  .keyboard-key.function-key,
-  .keyboard-key.modifier-key,
-  .keyboard-key.space-key {
-    font-size: 10px;
-  }
-
-  .keyboard-key[data-key="tab"] {
-    font-size: 14px;
-  }
-  
-  .keyboard-row {
-    gap: 3px;
-    margin-bottom: 4px;
-  }
-}
-
-@media (max-width: 480px) {
-  .keyboard-key {
-    min-height: 35px;
-    min-width: 30px;
-    font-size: 12px;
-  }
-  
-  .keyboard-key.function-key,
-  .keyboard-key.modifier-key,
-  .keyboard-key.space-key {
-    font-size: 9px;
-  }
-
-  .keyboard-key[data-key="tab"] {
-    font-size: 12px;
-  }
-  
-  .keyboard-row {
-    gap: 2px;
-    margin-bottom: 3px;
-  }
-}
-
-/* Animation for educational feedback */
-@keyframes keyPress {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.95); }
-  100% { transform: scale(1); }
-}
-
-.keyboard-key.highlighted {
-  animation: keyPress 0.2s ease;
-}
-
-/* Focus styles for accessibility */
-.keyboard-key:focus {
-  border-color: #2196F3;
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .keyboard-key {
-    border-width: 3px;
-    border-color: #000;
-  }
-  
-  .keyboard-key.highlighted {
-    border-width: 4px;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .keyboard-key {
-    transition: none;
-  }
-  
-  .keyboard-key.highlighted {
-    animation: none;
-  }
-}

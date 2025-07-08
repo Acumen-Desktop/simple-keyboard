@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test</title>
+    <link rel="stylesheet" href="typing-tutor-keyboard-functional.css">
+    <style>
+        body { padding: 20px; font-family: Arial, sans-serif; }
+        .debug { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        textarea { width: 100%; height: 100px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Debug Test</h1>
+    
+    <div class="debug">
+        <h3>Debug Output:</h3>
+        <div id="debug-output"></div>
+    </div>
+    
+    <textarea id="textInput" placeholder="Type here..."></textarea>
+    
+    <div id="keyboard-container"></div>
+
+    <script src="typing-tutor-keyboard-functional-fixed.js"></script>
+    <script>
+        let debugLog = document.getElementById('debug-output');
+        
+        function log(message) {
+            console.log(message);
+            debugLog.innerHTML += '<div>' + message + '</div>';
+            debugLog.scrollTop = debugLog.scrollHeight;
+        }
+        
+        let keyboard = createTypingTutorKeyboard({
+            container: '#keyboard-container',
+            debug: true,
+            onChange: (input) => {
+                log('onChange called with: "' + input + '"');
+                const textInput = document.getElementById('textInput');
+                textInput.value = input;
+            },
+            onKeyPress: (key, event) => {
+                log('onKeyPress: ' + key);
+            },
+            onStateChange: (state) => {
+                log('onStateChange: shift=' + state.isShiftPressed + ', caps=' + state.isCapsLockOn);
+            }
+        });
+        
+        document.getElementById('textInput').addEventListener('input', function(e) {
+            log('textarea input event: "' + e.target.value + '"');
+            keyboard.setInput(e.target.value);
+        });
+        
+        log('Keyboard initialized');
+    </script>
+</body>
+</html>
