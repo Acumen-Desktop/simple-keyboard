@@ -1,0 +1,33 @@
+# Development files
+example.html
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test/
+tests/
+__tests__/
+*.test.js
+*.spec.js
+
+# Build artifacts (keep only dist/)
+node_modules/
+coverage/
+.nyc_output/
+
+# Git
+.git/
+.gitignore
+.gitattributes

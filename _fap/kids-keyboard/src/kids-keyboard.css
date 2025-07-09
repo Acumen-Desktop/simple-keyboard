@@ -1,0 +1,436 @@
+/**
+ * Kids Keyboard - CSS Styles
+ * 
+ * Lightweight, accessible virtual keyboard styles designed specifically 
+ * for children's typing education.
+ * 
+ * @version 0.9.0
+ * @author Kids Keyboard Team
+ * @license MIT
+ * 
+ * ACKNOWLEDGMENTS:
+ * Design inspired by simple-keyboard (https://github.com/hodgef/simple-keyboard)
+ * Optimized for educational use with enhanced accessibility and visual feedback.
+ * 
+ * FEATURES:
+ * - Responsive design (desktop/laptop/tablet)
+ * - High contrast colors for young learners
+ * - Smooth animations and transitions
+ * - Tutor mode visual indicators
+ * - Accessibility-focused design
+ * - Performance-optimized CSS classes
+ */
+
+/* =============================================================================
+   KEYBOARD CONTAINER
+   ============================================================================= */
+
+.kids-keyboard {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  max-width: 800px;
+  min-width: 320px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* =============================================================================
+   KEYBOARD ROWS
+   ============================================================================= */
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 6px;
+  gap: 4px;
+}
+
+.keyboard-row:last-child {
+  margin-bottom: 0;
+}
+
+/* =============================================================================
+   KEYBOARD KEYS - BASE STYLES
+   ============================================================================= */
+
+.keyboard-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+  min-width: 45px;
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+/* Hover and Focus States */
+.keyboard-key:hover,
+.keyboard-key:focus {
+  border-color: #bbb;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.keyboard-key:focus {
+  outline: 2px solid #2196F3;
+  outline-offset: 2px;
+}
+
+.keyboard-key:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* =============================================================================
+   KEY TYPES - STYLING BY FUNCTION
+   ============================================================================= */
+
+/* Normal character keys (letters, numbers, symbols) */
+.keyboard-key.normal-key {
+  flex: 1;
+}
+
+/* Function keys (Backspace, Enter, Tab, etc.) */
+.keyboard-key.function-key {
+  background: #f8f9fa;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Modifier keys (Shift, Caps Lock, etc.) */
+.keyboard-key.modifier-key {
+  background: #fff3cd;
+  border-color: #ffeaa7;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Space bar */
+.keyboard-key.space-key {
+  flex: 6;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* =============================================================================
+   SPECIFIC KEY SIZING
+   ============================================================================= */
+
+.keyboard-key[data-key="backspace"] {
+  flex: 2.5;
+}
+
+.keyboard-key[data-key="tab"] {
+  flex: 1.5;
+}
+
+.keyboard-key[data-key="capslock"] {
+  flex: 2.0;
+}
+
+.keyboard-key[data-key="enter"] {
+  flex: 2.2;
+}
+
+.keyboard-key[data-key="shiftleft"],
+.keyboard-key[data-key="shiftright"] {
+  flex: 2.5;
+}
+
+/* =============================================================================
+   HIGHLIGHTING STATES - PHYSICAL KEYBOARD SYNC
+   ============================================================================= */
+
+.keyboard-key.highlighted {
+  font-weight: 700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Normal keys when highlighted (green) */
+.keyboard-key.highlight-normal {
+  background-color: #4CAF50 !important;
+  color: white;
+  border-color: #45a049;
+  font-weight: 700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Modifier keys when highlighted (yellow) */
+.keyboard-key.highlight-modifier {
+  background-color: #FFC107 !important;
+  color: #333;
+  border-color: #ffb300;
+  font-weight: 700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Function keys when highlighted (blue) */
+.keyboard-key.highlight-function {
+  background-color: #2196F3 !important;
+  color: white;
+  border-color: #1976D2;
+  font-weight: 700;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* =============================================================================
+   ACTIVE MODIFIER STATES
+   ============================================================================= */
+
+.keyboard-key.active-modifier {
+  background-color: #ff9800;
+  color: white;
+  border-color: #f57c00;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.keyboard-key.active-modifier.highlighted {
+  background-color: #ff6f00 !important;
+  border-color: #e65100;
+}
+
+/* =============================================================================
+   LAYOUT SWITCHING - DUAL CHARACTER DISPLAY
+   ============================================================================= */
+
+/* Default character display */
+.keyboard-key .key-char-default {
+  display: block;
+}
+
+.keyboard-key .key-char-shift {
+  display: none;
+}
+
+/* Shift layout - show shifted characters */
+.kids-keyboard.shift-layout .keyboard-key .key-char-default {
+  display: none;
+}
+
+.kids-keyboard.shift-layout .keyboard-key .key-char-shift {
+  display: block;
+}
+
+/* =============================================================================
+   TUTOR MODE CONTAINER STYLING
+   ============================================================================= */
+
+/* Base tutor container */
+.kids-keyboard-tutor {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+  border: 2px solid transparent;
+}
+
+/* Tutor Mode OFF state indicator */
+.kids-keyboard-tutor::before {
+  content: "TUTOR MODE OFF";
+  position: absolute;
+  top: -18px;
+  left: 50px; /* Make room for emoji */
+  background: #9e9e9e;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Large emoji indicator */
+.kids-keyboard-tutor::after {
+  content: "🎯";
+  position: absolute;
+  top: -22px;
+  left: 20px;
+  font-size: 20px;
+  z-index: 1001;
+  transition: all 0.3s ease;
+}
+
+/* Tutor Mode ON state */
+.kids-keyboard-tutor.tutor-mode-active {
+  background-color: rgba(76, 175, 80, 0.08);
+  border: 2px solid #4CAF50;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.25);
+}
+
+.kids-keyboard-tutor.tutor-mode-active::before {
+  content: "TUTOR MODE ON";
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  transform: scale(1.05);
+}
+
+.kids-keyboard-tutor.tutor-mode-active::after {
+  font-size: 24px;
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Keyboard enhancement in tutor mode */
+.kids-keyboard-tutor .kids-keyboard {
+  transition: box-shadow 0.3s ease;
+}
+
+.kids-keyboard-tutor.tutor-mode-active .kids-keyboard {
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.15);
+}
+
+/* =============================================================================
+   INPUT FIELD STYLING
+   ============================================================================= */
+
+.kids-display {
+  width: calc(100% - 40px);
+  min-height: 120px;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  background: #f8f9fa;
+  resize: vertical;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kids-display:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  background: white;
+}
+
+/* =============================================================================
+   RESPONSIVE DESIGN - DESKTOP/LAPTOP/TABLET
+   ============================================================================= */
+
+/* Tablet and small desktop */
+@media (max-width: 1024px) {
+  .kids-keyboard {
+    max-width: 90vw;
+    padding: 10px;
+  }
+  
+  .keyboard-key {
+    min-height: 40px;
+    min-width: 40px;
+    font-size: 14px;
+  }
+  
+  .keyboard-key.function-key,
+  .keyboard-key.modifier-key {
+    font-size: 10px;
+  }
+}
+
+/* Small tablets and large phones */
+@media (max-width: 768px) {
+  .kids-keyboard {
+    max-width: 95vw;
+    padding: 8px;
+  }
+  
+  .keyboard-key {
+    min-height: 35px;
+    min-width: 35px;
+    font-size: 12px;
+  }
+  
+  .keyboard-key.function-key,
+  .keyboard-key.modifier-key {
+    font-size: 9px;
+  }
+  
+  .keyboard-row {
+    gap: 3px;
+    margin-bottom: 4px;
+  }
+}
+
+/* =============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================= */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .keyboard-key {
+    border-width: 3px;
+  }
+  
+  .keyboard-key.highlight-normal {
+    background-color: #2E7D32 !important;
+  }
+  
+  .keyboard-key.highlight-modifier {
+    background-color: #F57F17 !important;
+  }
+  
+  .keyboard-key.highlight-function {
+    background-color: #1565C0 !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .keyboard-key,
+  .kids-keyboard-tutor,
+  .kids-keyboard-tutor::before,
+  .kids-keyboard-tutor::after {
+    transition: none;
+  }
+  
+  .keyboard-key:hover,
+  .keyboard-key:focus,
+  .keyboard-key.highlighted {
+    transform: none;
+  }
+}
+
+/* =============================================================================
+   PRINT STYLES
+   ============================================================================= */
+
+@media print {
+  .kids-keyboard {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+  
+  .keyboard-key {
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "name": "kids-keyboard",
+  "version": "0.9.0",
+  "description": "A lightweight, accessible virtual keyboard designed specifically for children's typing education. Inspired by simple-keyboard.",
+  "main": "dist/kids-keyboard.js",
+  "module": "dist/kids-keyboard.esm.js",
+  "types": "dist/kids-keyboard.d.ts",
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npm run build:umd && npm run build:esm && npm run build:css",
+    "build:umd": "mkdir -p dist && cp src/kids-keyboard.js dist/kids-keyboard.js",
+    "build:esm": "mkdir -p dist && cp src/kids-keyboard.esm.js dist/kids-keyboard.esm.js",
+    "build:css": "mkdir -p dist && cp src/kids-keyboard.css dist/kids-keyboard.css",
+    "prepare": "npm run build",
+    "test": "echo \"Tests coming in v1.0.0\" && exit 0"
+  },
+  "keywords": [
+    "virtual-keyboard",
+    "kids",
+    "children",
+    "typing",
+    "education",
+    "accessibility",
+    "learning",
+    "tutor",
+    "keyboard",
+    "input"
+  ],
+  "author": "Kids Keyboard Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/kids-keyboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/kids-keyboard/issues"
+  },
+  "homepage": "https://github.com/your-org/kids-keyboard#readme",
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 11"
+  ],
+  "devDependencies": {},
+  "peerDependencies": {},
+  "dependencies": {},
+  "acknowledgments": {
+    "inspiration": "This library was inspired by simple-keyboard (https://github.com/hodgef/simple-keyboard), a powerful virtual keyboard library. Kids-keyboard is a lightweight, education-focused derivative optimized specifically for children's typing learning applications."
+  }
+}
